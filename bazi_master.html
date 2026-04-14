@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>八字修煉儀 v5.0</title>
+    <style>
+        :root { --bg: #121212; --card: #1e1e1e; --gold: #d4af37; --text: #e0e0e0; }
+        body { background: var(--bg); color: var(--text); font-family: sans-serif; text-align: center; padding: 10px; margin: 0; }
+        #game-container { max-width: 500px; margin: 10px auto; background: var(--card); padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .mode-selector { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 20px; background: #252525; padding: 5px; border-radius: 12px; }
+        .mode-selector button { flex: 1; padding: 10px 5px; font-size: 0.8rem; background: transparent; border: none; color: #777; cursor: pointer; border-radius: 8px; }
+        .active-mode { background: #444 !important; color: #f1c40f !important; font-weight: bold; }
+        #quest { font-size: 1.4rem; margin: 20px 0; font-weight: bold; color: #f1c40f; min-height: 50px; }
+        #day-master-area { height: 120px; display: flex; justify-content: center; align-items: center; margin-bottom: 10px; }
+        #day-master-box { background: linear-gradient(135deg, #d4af37, #b8860b); color: #1a1a1a; width: 80px; height: 100px; border-radius: 15px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 2px solid #f1c40f; }
+        #current-dm { font-size: 2.5rem; font-weight: bold; }
+        #options { display: grid; grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)); gap: 10px; }
+        .opt-btn { font-size: 1.4rem; height: 80px; cursor: pointer; border: none; border-radius: 12px; font-weight: bold; color: #fff; }
+        .木 { background: #27ae60; box-shadow: 0 4px #1e8449; }
+        .火 { background: #e74c3c; box-shadow: 0 4px #c0392b; }
+        .土 { background: #a67c52; box-shadow: 0 4px #7e5e3e; }
+        .金 { background: #d4af37; box-shadow: 0 4px #b8860b; }
+        .水 { background: #2980b9; box-shadow: 0 4px #1a5276; }
+        .通用 { background: #444; box-shadow: 0 4px #222; }
+        body:not(.ten-gods-mode) #day-master-area { display: none; }
+        .ten-gods-mode #options { grid-template-columns: 1fr 1fr; }
+        .ten-gods-mode .opt-btn { height: 50px; font-size: 1.1rem; }
+    </style>
+</head>
+<body>
+<div id="game-container">
+    <div style="display:flex; justify-content:space-between; color:#555; font-size:0.8rem;"><span>v5.0</span><span id="score">分數: 0</span></div>
+    <h1>八字全能修煉</h1>
+    <div class="mode-selector">
+        <button id="m-五行" onclick="changeMode('五行')">五行</button>
+        <button id="m-天干" onclick="changeMode('天干')">天干</button>
+        <button id="m-地支" onclick="changeMode('地支')">地支</button>
+        <button id="m-十神" onclick="changeMode('十神')">十神</button>
+        <button id="m-關係" onclick="changeMode('關係')">關係</button>
+    </div>
+    <div id="quest">請選擇模式</div>
+    <div id="day-master-area"><div id="day-master-box"><div style="font-size:0.7rem">日元</div><div id="current-dm">甲</div></div></div>
+    <div id="feedback" style="height:30px; margin:10px; font-weight:bold;"></div>
+    <div id="options"></div>
+</div>
+
+<script>
+const db = {
+    天干: [
+        {id:"甲",type:"木",y:"陽",d:"東方",s:"春季"},{id:"乙",type:"木",y:"陰",d:"東方",s:"春季"},
+        {id:"丙",type:"火",y:"陽",d:"南方",s:"夏季"},{id:"丁",type:"火",y:"陰",d:"南方",s:"夏季"},
+        {id:"戊",type:"土",y:"陽",d:"中央",s:"長夏"},{id:"己",type:"土",y:"陰",d:"中央",s:"長夏"},
+        {id:"庚",type:"金",y:"陽",d:"西方",s:"秋季"},{id:"辛",type:"金",y:"陰",d:"西方",s:"秋季"},
+        {id:"壬",type:"水",y:"陽",d:"北方",s:"冬季"},{id:"癸",type:"水",y:"陰",d:"北方",s:"冬季"}
+    ],
+    地支: [
+        {id:"子",type:"水",a:"鼠",t:"23-01",h:["癸"]},{id:"丑",type:"土",a:"牛",t:"01-03",h:["己","癸","辛"]},
+        {id:"寅",type:"木",a:"虎",t:"03-05",h:["甲","丙","戊"]},{id:"卯",type:"木",a:"兔",t:"05-07",h:["乙"]},
+        {id:"辰",type:"土",a:"龍",t:"07-09",h:["戊","乙","癸"]},{id:"巳",type:"火",a:"蛇",t:"09-11",h:["丙","庚","戊"]},
+        {id:"午",type:"火",a:"馬",t:"11-13",h:["丁","己"]},{id:"未",type:"土",a:"羊",t:"13-15",h:["己","丁","乙"]},
+        {id:"申",type:"金",a:"猴",t:"15-17",h:["庚","壬","戊"]},{id:"酉",type:"金",a:"雞",t:"17-19",h:["辛"]},
+        {id:"戌",type:"土",a:"犬",t:"19-21",h:["戊","辛","丁"]},{id:"亥",type:"水",a:"豬",t:"21-23",h:["壬","甲"]}
+    ],
+    十神: ["比肩","劫財","食神","傷官","偏財","正財","七殺","正官","偏印","正印"],
+    方位: ["東方","南方","中央","西方","北方"],
+    季節: ["春季","夏季","長夏","秋季","冬季"]
+};
+const rel = {
+    沖: {"子":"午","午":"子","丑":"未","未":"丑","寅":"申","申":"寅","卯":"酉","酉":"卯","辰":"戌","戌":"辰","巳":"亥","亥":"巳"},
+    合: {"子":"丑","丑":"子","寅":"亥","亥":"寅","卯":"戌","戌":"卯","辰":"酉","酉":"辰","巳":"申","申":"巳","午":"未","未":"午"},
+    害: {"子":"未","未":"子","丑":"午","午":"丑","寅":"巳","巳":"寅","卯":"辰","辰":"卯","申":"亥","亥":"申","酉":"戌","戌":"酉"}
+};
+const sRel = {生: {木:"火",火:"土",土:"金",金:"水",水:"木"}, 剋: {木:"土",土:"水",水:"火",火:"金",金:"木"}};
+let curMode = "", score = 0, curAns = [], selected = [];
+
+function changeMode(m) {
+    curMode = m;
+    document.querySelectorAll(".mode-selector button").forEach(b => b.classList.remove("active-mode"));
+    document.getElementById("m-" + m).classList.add("active-mode");
+    document.body.className = m === "十神" ? "ten-gods-mode" : "";
+    next();
+}
+
+function next() {
+    const q = document.getElementById("quest"); const opt = document.getElementById("options");
+    document.getElementById("feedback").innerText = ""; opt.innerHTML = ""; selected = [];
+    if (curMode === "天干") {
+        const s = db.天干[Math.floor(Math.random() * 10)]; const r = Math.floor(Math.random() * 3);
+        if(r === 0) { q.innerText = `【${s.id}】的方位？`; curAns = [s.d]; render(db.方位, "通用"); }
+        else if(r === 1) { q.innerText = `【${s.id}】的季節？`; curAns = [s.s]; render(db.季節, "通用"); }
+        else { q.innerText = `【${s.id}】屬什麼五行？`; curAns = [s.type]; render(["木","火","土","金","水"], "auto"); }
+    } else if (curMode === "十神") {
+        const dm = db.天干[Math.floor(Math.random() * 10)]; const tg = db.天干[Math.floor(Math.random() * 10)];
+        document.getElementById("current-dm").innerText = dm.id;
+        q.innerText = `對【${dm.id}】來說，【${tg.id}】是？`; curAns = [calc(dm, tg)]; render(db.十神, "通用");
+    } else if (curMode === "地支") {
+        const b = db.地支[Math.floor(Math.random() * 12)]; const r = Math.floor(Math.random() * 2);
+        if(r === 0) { q.innerText = `【${b.id}】藏干有？`; curAns = b.h; render(db.天干, "auto"); }
+        else { q.innerText = `【${b.t}】時辰是？`; curAns = [b.id]; render(db.地支, "auto"); }
+    } else if (curMode === "關係") {
+        const type = ["沖","合","害"][Math.floor(Math.random()*3)]; const b = db.地支[Math.floor(Math.random()*12)];
+        q.innerText = `【${b.id}】的六「${type}」是？`; curAns = [rel[type][b.id]]; render(db.地支, "auto");
+    } else {
+        const els = ["木","火","土","金","水"]; const el = els[Math.floor(Math.random()*5)]; const task = Math.random() > 0.5 ? "生" : "剋";
+        q.innerText = `${task} ➔ 【${el}】的是？`; const target = task === "生" ? Object.keys(sRel.生).find(k=>sRel.生[k]===el) : Object.keys(sRel.剋).find(k=>sRel.剋[k]===el);
+        curAns = [target]; render(els, "auto");
+    }
+}
+
+function render(arr, colorMode) {
+    const opt = document.getElementById("options");
+    arr.forEach(i => {
+        const val = typeof i === "string" ? i : i.id;
+        const btn = document.createElement("button");
+        btn.className = `opt-btn ${colorMode === "auto" ? (i.type || val) : colorMode}`;
+        btn.innerText = val;
+        btn.onclick = () => {
+            if(curAns.includes(val)) {
+                if(document.getElementById("quest").innerText.includes("藏干")) {
+                    if(!selected.includes(val)) { selected.push(val); btn.style.opacity = "0.3"; if(selected.length === curAns.length) end(true); }
+                } else end(true);
+            } else end(false);
+        };
+        opt.appendChild(btn);
+    });
+}
+
+function calc(dm, tg) {
+    const same = dm.y === tg.y;
+    if (dm.type === tg.type) return same ? "比肩" : "劫財";
+    if (sRel.生[dm.type] === tg.type) return same ? "食神" : "傷官";
+    if (sRel.剋[dm.type] === tg.type) return same ? "偏財" : "正財";
+    if (sRel.剋[tg.type] === dm.type) return same ? "七殺" : "正官";
+    if (sRel.生[tg.type] === dm.type) return same ? "偏印" : "正印";
+}
+
+function end(win) {
+    const f = document.getElementById("feedback");
+    f.innerText = win ? "✅ 正確！" : "❌ 錯誤！答案是: " + curAns.join(",");
+    f.style.color = win ? "#2ecc71" : "#e74c3c";
+    if(win) { score += 10; document.getElementById("score").innerText = "分數: " + score; }
+    document.querySelectorAll(".opt-btn").forEach(b => b.style.pointerEvents = "none");
+    setTimeout(next, 1000);
+}
+changeMode("五行");
+</script>
+</body>
+</html>
