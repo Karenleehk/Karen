@@ -3,183 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>八字修煉儀 v6.0 - 清爽白金版</title>
+    <title>八字修煉儀 v6.5 - 黑金精品版</title>
     <style>
-        /* --- 核心配色與變數 --- */
         :root {
-            --bg-color: #f5f7fa;        /* 輕盈的背景色 */
-            --card-bg: #ffffff;         /* 純白卡牌 */
-            --text-main: #333333;       /* 深灰文字，比純黑柔和 */
-            --text-sub: #888888;        /* 輔助文字 */
-            --gold-dark: #b8860b;       /* 暗金色 (用於文字) */
-            --gold-light: #f1c40f;      /* 亮金色 */
-            --shadow: 0 10px 20px rgba(0,0,0,0.05); /* 輕微的陰影 */
-            --btn-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            --btn-active-shadow: inset 0 2px 4px rgba(0,0,0,0.1); /* 按下時的內陰影 */
+            --bg-color: #121212;       /* 深邃黑 */
+            --card-bg: #1e1e1e;        /* 深灰卡牌 */
+            --gold: #d4af37;           /* 經典金 */
+            --gold-light: #f1c40f;
+            --text-main: #e0e0e0;      /* 亮灰文字 */
+            --text-sub: #666666;
+            --btn-shadow: 0 4px 0px rgba(0,0,0,0.5);
         }
 
-        /* --- 基礎樣式 --- */
         body { 
             background-color: var(--bg-color); 
             color: var(--text-main); 
-            font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; 
+            font-family: sans-serif; 
             text-align: center; 
-            padding: 10px; 
-            margin: 0; 
-            touch-action: manipulation; /* 優化手機點擊 */
+            padding: 10px; margin: 0; 
+            touch-action: manipulation;
         }
 
-        h1 { font-size: 1.5rem; color: var(--gold-dark); margin-top: 10px; }
-
-        /* --- 主容器 --- */
         #game-container { 
             max-width: 480px; 
-            margin: 10px auto; 
+            margin: 15px auto; 
             background: var(--card-bg); 
             padding: 25px 20px; 
-            border-radius: 30px; 
-            box-shadow: var(--shadow); 
+            border-radius: 25px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6); 
         }
 
-        /* --- 頂部資訊欄 --- */
-        #info-panel { 
-            display: flex; 
-            justify-content: space-between; 
-            font-size: 0.8rem; 
-            color: var(--text-sub); 
-            margin-bottom: 15px; 
-            padding: 0 10px;
-        }
-
-        /* --- 模式選擇器 (重設計) --- */
+        /* 模式選擇器 */
         .mode-selector { 
-            display: flex; 
-            flex-wrap: wrap;
-            gap: 8px; 
-            margin-bottom: 25px; 
-            background: #eeeeee; 
-            padding: 6px; 
-            border-radius: 15px; 
+            display: flex; flex-wrap: wrap; gap: 6px; 
+            margin-bottom: 25px; background: #2a2a2a; 
+            padding: 5px; border-radius: 12px; 
         }
         .mode-selector button { 
-            flex: 1 1 30%; 
-            padding: 10px 0; 
-            font-size: 0.85rem; 
-            background: transparent; 
-            border: none; 
-            color: var(--text-sub); 
-            cursor: pointer; 
-            border-radius: 10px; 
-            transition: all 0.3s ease;
-            font-weight: bold;
+            flex: 1 1 30%; padding: 10px 0; font-size: 0.85rem; 
+            background: transparent; border: none; color: #888; 
+            cursor: pointer; border-radius: 8px; transition: 0.3s;
         }
-        /* 啟用中的模式 */
         .active-mode { 
-            background: var(--card-bg) !important; 
-            color: var(--gold-dark) !important; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            background: #444 !important; color: var(--gold-light) !important; font-weight: bold; 
         }
 
-        /* --- 題目區 --- */
+        /* 題目區 */
         #quest { 
-            font-size: 1.6rem; 
-            margin: 20px 0; 
-            font-weight: bold; 
-            color: var(--text-main); 
-            min-height: 50px; 
-            line-height: 1.3; 
+            font-size: 1.5rem; margin: 20px 0; font-weight: bold; 
+            color: var(--gold-light); min-height: 50px; 
         }
 
-        /* --- 日元核心 (置中) --- */
-        #day-master-area { height: 140px; display: flex; justify-content: center; align-items: center; transition: 0.3s; }
+        /* 日元卡牌 */
+        #day-master-area { height: 130px; display: flex; justify-content: center; align-items: center; }
         #day-master-box { 
-            background: linear-gradient(135deg, var(--gold-light) 0%, #b8860b 100%); 
-            color: #ffffff; 
-            width: 90px; 
-            height: 110px; 
-            border-radius: 20px; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            align-items: center; 
-            border: 4px solid #ffffff; /* 白邊框更顯精緻 */
-            box-shadow: 0 5px 15px rgba(184, 134, 11, 0.3); 
+            background: linear-gradient(135deg, var(--gold) 0%, #8a6d1d 100%); 
+            color: #121212; width: 85px; height: 105px; border-radius: 15px; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            border: 2px solid var(--gold-light); box-shadow: 0 0 20px rgba(212, 175, 55, 0.3); 
         }
-        .dm-label { font-size: 0.75rem; font-weight: bold; margin-bottom: 5px; letter-spacing: 2px; opacity: 0.9; }
-        #current-dm { font-size: 3rem; font-weight: 900; }
+        #current-dm { font-size: 2.8rem; font-weight: 900; }
 
-        /* --- 回饋與選項 --- */
-        #feedback { font-size: 1.2rem; height: 35px; margin: 15px 0; font-weight: bold; }
-        
-        /* 選項網格 */
-        #options { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); 
-            gap: 15px; 
-            padding: 0 5px;
-        }
-        
-        /* --- 按鈕通用樣式 (重設計) --- */
+        /* 按鈕設計 */
+        #options { display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 12px; }
         .opt-btn { 
-            font-size: 1.6rem; 
-            height: 85px; 
-            cursor: pointer; 
-            border: none; 
-            border-radius: 18px; 
-            font-weight: bold; 
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.1s ease; /* 縮短過渡時間，點擊更爽快 */
-            box-shadow: var(--btn-shadow); /* 微立體感 */
+            font-size: 1.5rem; height: 85px; cursor: pointer; border: none; 
+            border-radius: 15px; font-weight: bold; color: #fff; 
+            transition: 0.1s; box-shadow: var(--btn-shadow);
         }
+        .opt-btn:active { transform: translateY(3px); box-shadow: none; }
 
-        /* 按下時的立體凹陷效果 */
-        .opt-btn:active { 
-            transform: translateY(2px); /* 向下微移 */
-            box-shadow: var(--btn-active-shadow) !important; /* 變為內陰影 */
-        }
+        /* 五行顏色 */
+        .木 { background: #27ae60 !important; }
+        .火 { background: #e74c3c !important; }
+        .土 { background: #a67c52 !important; }
+        .金 { background: #d4af37 !important; color: #121212 !important; }
+        .水 { background: #2980b9 !important; }
+        .通用 { background: #3d3d3d !important; color: #fff !important; }
 
-        /* --- 五行顏色定義 (調柔和) --- */
-        .木 { background: #2ecc71 !important; }
-        .火 { background: #ff6b6b !important; }
-        .土 { background: #be9b7b !important; }
-        .金 { background: #f1c40f !important; color: #333 !important;} /* 金色配深字 */
-        .水 { background: #3498db !important; }
-        
-        /* 方位、季節、十神等通用按鈕 */
-        .通用 { 
-            background: #ffffff !important; 
-            color: var(--text-main) !important; 
-            border: 2px solid #eeeeee;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
-        }
-        .通用:active { border-color: #dddddd; }
-
-        /* --- 特殊模式佈局調整 --- */
-        /* 非十神模式隱藏日元 */
+        /* 佈局切換 */
         body:not(.ten-gods-mode) #day-master-area { display: none; }
-        
-        /* 十神模式：按鈕變小、兩列 */
-        .ten-gods-mode #options { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .ten-gods-mode .opt-btn { height: 55px; font-size: 1.1rem; border-radius: 12px; }
-        
-        /* 地支/關係模式：三列 */
-        .wide-layout #options { grid-template-columns: repeat(3, 1fr); gap: 12px; }
-        .wide-layout .opt-btn { height: 75px; font-size: 1.4rem; border-radius: 15px; }
-
+        .ten-gods-mode #options { grid-template-columns: 1fr 1fr; }
+        .ten-gods-mode .opt-btn { height: 50px; font-size: 1.1rem; }
+        .wide-layout #options { grid-template-columns: repeat(3, 1fr); }
     </style>
 </head>
 <body>
 
 <div id="game-container">
-    <div id="info-panel">
-        <span id="ver">白金版 v6.0</span>
+    <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:#555; margin-bottom:10px;">
+        <span>v6.5 Black Gold</span>
         <span id="score">分數: 0</span>
     </div>
     
-    <h1>八字全能修煉儀</h1>
+    <h1 style="font-size:1.2rem; color:#888; margin:0;">八字全能修煉儀</h1>
     
     <div class="mode-selector">
         <button id="btn-五行" onclick="changeMode('五行')">五行</button>
@@ -189,21 +106,21 @@
         <button id="btn-關係" onclick="changeMode('關係')">關係</button>
     </div>
 
-    <div id="quest">選擇模式開始修煉</div>
+    <div id="quest">加載中...</div>
 
     <div id="day-master-area">
         <div id="day-master-box">
-            <div class="dm-label">日元</div>
+            <div style="font-size:0.7rem; font-weight:bold;">日元</div>
             <div id="current-dm">甲</div>
         </div>
     </div>
 
-    <div id="feedback"></div>
+    <div id="feedback" style="height:35px; margin:10px 0; font-weight:bold; font-size:1.2rem;"></div>
     <div id="options"></div>
 </div>
 
 <script>
-// --- 資料庫 (保持不變) ---
+// 資料與邏輯（簡化優化版）
 const database = {
     "天干": [
         {id:"甲",type:"木",yinYang:"陽",dir:"東方",season:"春季"},{id:"乙",type:"木",yinYang:"陰",dir:"東方",season:"春季"},
@@ -225,31 +142,26 @@ const database = {
     "季節": ["春季","夏季","長夏","秋季","冬季"]
 };
 
+const sRel = {
+    "生": {"木":"火", "火":"土", "土":"金", "金":"水", "水":"木"},
+    "剋": {"木":"土", "土":"水", "水":"火", "火":"金", "金":"木"}
+};
+
 const relations = {
     "沖": {"子":"午","午":"子","丑":"未","未":"丑","寅":"申","申":"寅","卯":"酉","酉":"卯","辰":"戌","戌":"辰","巳":"亥","亥":"巳"},
     "合": {"子":"丑","丑":"子","寅":"亥","亥":"寅","卯":"戌","戌":"卯","辰":"酉","酉":"辰","巳":"申","申":"巳","午":"未","未":"午"},
     "害": {"子":"未","未":"子","丑":"午","午":"丑","寅":"巳","巳":"寅","卯":"辰","辰":"卯","申":"亥","亥":"申","酉":"戌","戌":"酉"}
 };
 
-const sRel = {
-    "生": {"木":"火", "火":"土", "土":"金", "金":"水", "水":"木"},
-    "剋": {"木":"土", "土":"水", "水":"火", "火":"金", "金":"木"}
-};
-
-// --- 遊戲邏輯 (保持不變) ---
 let currentMode = "五行", score = 0, currentCorrectList = [], userSelectedList = [];
 
 function changeMode(mode) {
     currentMode = mode;
-    // 更新按鈕樣式
     document.querySelectorAll('.mode-selector button').forEach(b => b.classList.remove('active-mode'));
     document.getElementById('btn-' + mode).classList.add('active-mode');
-    
-    // 切換佈局 class
     document.body.className = "";
     if (mode === '十神') document.body.classList.add('ten-gods-mode');
     if (mode === '地支' || mode === '關係') document.body.classList.add('wide-layout');
-    
     nextQuestion();
 }
 
@@ -262,21 +174,16 @@ function nextQuestion() {
 
     if (currentMode === "天干") {
         const stem = database.天干[Math.floor(Math.random() * 10)];
-        const type = Math.floor(Math.random() * 4); // 增加考五行
-        if(type === 0) {
-            q.innerText = `【${stem.id}】的方位是？`;
+        const sub = Math.floor(Math.random() * 3);
+        if(sub === 0) {
+            q.innerText = `【${stem.id}】的「方位」？`;
             currentCorrectList = [stem.dir]; renderButtons(database.方位, "通用");
-        } else if(type === 1) {
-            q.innerText = `【${stem.id}】的季節是？`;
+        } else if(sub === 1) {
+            q.innerText = `【${stem.id}】的「季節」？`;
             currentCorrectList = [stem.season]; renderButtons(database.季節, "通用");
-        } else if(type === 2) {
+        } else {
             q.innerText = `【${stem.id}】屬什麼五行？`;
             currentCorrectList = [stem.type]; renderButtons(["木","火","土","金","水"], "auto");
-        } else {
-            const task = Math.random() > 0.5 ? "生" : "剋";
-            const targetEl = task === "生" ? Object.keys(sRel.生).find(k=>sRel.生[k]===stem.type) : Object.keys(sRel.剋).find(k=>sRel.剋[k]===stem.type);
-            q.innerText = `${task} ➔ 【${stem.type}】的天干是？`;
-            currentCorrectList = ["TYPE:" + targetEl]; renderButtons(database.天干, "auto");
         }
     } else if (currentMode === "十神") {
         const dm = database.天干[Math.floor(Math.random() * 10)];
@@ -284,83 +191,53 @@ function nextQuestion() {
         document.getElementById('current-dm').innerText = dm.id;
         q.innerText = `對【${dm.id}】來說，【${tg.id}】是？`;
         currentCorrectList = [calcTenGod(dm, tg)]; renderButtons(database.十神, "通用");
-    } else if (currentMode === "關係") {
-        const rType = ["沖", "合", "害"][Math.floor(Math.random() * 3)];
-        const bKeys = Object.keys(relations[rType]);
-        const target = bKeys[Math.floor(Math.random() * bKeys.length)];
-        q.innerText = `【${target}】的六「${rType}」是？`;
-        currentCorrectList = [relations[rType][target]]; renderButtons(database.地支, "auto");
     } else if (currentMode === "地支") {
         const b = database.地支[Math.floor(Math.random() * 12)];
-        const sub = Math.floor(Math.random() * 3);
+        const sub = Math.floor(Math.random() * 2);
         if(sub === 0) {
-            q.innerText = `【${b.id}】藏哪 ${b.hidden.length} 個天干？`;
+            q.innerText = `【${b.id}】的「藏干」？`;
             currentCorrectList = b.hidden; renderButtons(database.天干, "auto");
-        } else if(sub === 1) {
-            q.innerText = `生肖【${b.animal}】是誰？`;
-            currentCorrectList = [b.id]; renderButtons(database.地支, "auto");
         } else {
             q.innerText = `時辰【${b.time}】是誰？`;
             currentCorrectList = [b.id]; renderButtons(database.地支, "auto");
         }
-    } else { // 五行模式
+    } else if (currentMode === "關係") {
+        const rType = ["沖", "合", "害"][Math.floor(Math.random() * 3)];
+        const b = database.地支[Math.floor(Math.random() * 12)];
+        q.innerText = `【${b.id}】的六「${rType}」是？`;
+        currentCorrectList = [relations[rType][b.id]]; renderButtons(database.地支, "auto");
+    } else {
         const els = ["木","火","土","金","水"];
         const el = els[Math.floor(Math.random() * 5)];
         const task = Math.random() > 0.5 ? "生" : "剋";
         q.innerText = `${task} ➔ 【${el}】的是？`;
-        const targetEl = task === "生" ? Object.keys(sRel.生).find(k=>sRel.生[k]===el) : Object.keys(sRel.剋).find(k=>sRel.剋[k]===el);
-        currentCorrectList = [targetEl]; // 簡化判定
-        renderButtons(els, "auto");
+        const target = task === "生" ? Object.keys(sRel.生).find(k=>sRel.生[k]===el) : Object.keys(sRel.剋).find(k=>sRel.剋[k]===el);
+        currentCorrectList = [target]; renderButtons(els, "auto");
     }
 }
 
-// 產生按鈕
 function renderButtons(arr, colorMode) {
     const container = document.getElementById('options');
     arr.forEach(item => {
         const val = typeof item === 'string' ? item : item.id;
-        // 決定顏色：auto = 根據五行屬性 / 通用 = 白底黑字
-        const colorClass = colorMode === "auto" ? (item.type || item) : colorMode;
-        
+        const color = colorMode === "auto" ? (item.type || val) : colorMode;
         const btn = document.createElement('button');
-        btn.className = `opt-btn ${colorClass}`;
+        btn.className = `opt-btn ${color}`;
         btn.innerText = val;
-        btn.onclick = () => checkAnswer(val, item.type, btn);
+        btn.onclick = () => {
+            if (currentCorrectList.includes(val)) {
+                if (document.getElementById('quest').innerText.includes("藏干")) {
+                    if(!userSelectedList.includes(val)) {
+                        userSelectedList.push(val); btn.style.opacity = "0.2";
+                        if(userSelectedList.length === currentCorrectList.length) end(true, "✅ 藏干全對！");
+                    }
+                } else end(true, "✅ 正確！");
+            } else end(false, "❌ 答案: " + currentCorrectList.join(","));
+        };
         container.appendChild(btn);
     });
 }
 
-// 檢查答案
-function checkAnswer(clickedVal, clickedType, btnObj) {
-    const isTypeTask = currentCorrectList[0].startsWith("TYPE:");
-    let isCorrect = false;
-
-    if (isTypeTask) {
-        const targetType = currentCorrectList[0].split(":")[1];
-        isCorrect = (clickedType === targetType);
-    } else {
-        isCorrect = currentCorrectList.includes(clickedVal);
-    }
-
-    if (isCorrect) {
-        // 藏干題多選判定
-        if (document.getElementById('quest').innerText.includes("藏哪")) {
-            if(!userSelectedList.includes(clickedVal)) {
-                userSelectedList.push(clickedVal);
-                btnObj.style.opacity = "0.2"; // 變淡表示已選
-                btnObj.style.pointerEvents = "none";
-                if(userSelectedList.length === currentCorrectList.length) endRound(true, "✅ 藏干全對！");
-            }
-        } else {
-            endRound(true, "✅ 正確！");
-        }
-    } else {
-        const finalAns = isTypeTask ? currentCorrectList[0].split(":")[1] : currentCorrectList.join(",");
-        endRound(false, "❌ 錯誤！答案是: " + finalAns);
-    }
-}
-
-// 計算十神
 function calcTenGod(dm, tg) {
     const same = dm.yinYang === tg.yinYang;
     if (dm.type === tg.type) return same ? "比肩" : "劫財";
@@ -370,25 +247,14 @@ function calcTenGod(dm, tg) {
     if (sRel.生[tg.type] === dm.type) return same ? "偏印" : "正印";
 }
 
-// 回合結束
-function endRound(win, msg) {
+function end(win, msg) {
     const fb = document.getElementById('feedback');
-    fb.innerText = msg;
-    fb.style.color = win ? "#2ecc71" : "#e74c3c";
-    
-    if(win) score += 10;
-    document.getElementById('score').innerText = "分數: " + score;
-    
-    // 鎖定所有按鈕
+    fb.innerText = msg; fb.style.color = win ? "#2ecc71" : "#e74c3c";
+    if(win) { score += 10; document.getElementById('score').innerText = "分數: " + score; }
     document.querySelectorAll('.opt-btn').forEach(b => b.style.pointerEvents = "none");
-    
-    // 1.2 秒後下一題
     setTimeout(nextQuestion, 1200);
 }
-
-// 啟動
 changeMode('五行');
 </script>
-
 </body>
 </html>
